@@ -14,17 +14,13 @@ type Props = {
 };
 
 const ListItems = ({ itemsStore }: Props) => {
-  const [page, setPage] = useState(1);
-
   useEffect(() => {
     itemsStore.fetch();
   }, []);
 
-  const updateList = () => {
-    setPage(page + 1);
-
+  const fetchMore = () => {
     if (!itemsStore.loading.is()) {
-      itemsStore.update(page + 1);
+      itemsStore.fetchMore();
     }
   };
 
@@ -59,7 +55,7 @@ const ListItems = ({ itemsStore }: Props) => {
       data={itemsStore.items}
       renderItem={renderItem}
       ItemSeparatorComponent={() => <Divisor />}
-      onEndReached={updateList}
+      onEndReached={fetchMore}
       onEndReachedThreshold={0.1}
       ListFooterComponent={() =>
         itemsStore.loading.is() &&

@@ -9,13 +9,15 @@ import { translatedTextService } from '@services/translation';
 export class ItemsStore {
   loading = new LoadingState();
   items: PhrasesDTO[] = [];
+  page = 2;
 
   constructor() {
     makeObservable(this, {
       fetch: action,
-      update: action,
+      fetchMore: action,
       loading: observable,
       items: observable,
+      page: observable,
     });
   }
 
@@ -30,12 +32,13 @@ export class ItemsStore {
     this.loading.off();
   }
 
-  async update(page: number) {
+  async fetchMore() {
     this.loading.on();
-    const data = await api(page);
+    const data = await api(this.page);
 
     runInAction(() => {
       this.items.push(...(data as PhrasesDTO[]));
+      this.page++;
     });
 
     this.loading.off();
