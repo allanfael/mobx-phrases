@@ -11,6 +11,7 @@ import SnackBar from '../SnackBar';
 import { ItemsStore } from '@store';
 import { PhrasesDTO } from '@dto/PhrasesDTO';
 import { copyToClipboard } from '@utils/clipboard';
+import { textToSpeech } from '@services/speech';
 
 interface ContentProps {
   data: PhrasesDTO;
@@ -22,25 +23,29 @@ const Content = ({ data, itemsStore }: ContentProps) => {
     itemsStore.translate(data.phrase, data.id);
   };
 
+  const speechText = () => {
+    textToSpeech(data.phrase);
+  };
+
   const toast = useToast();
 
-  const copyText = async () => {
+  const copyText = () => {
     if (!!data.translation) {
-      await copyToClipboard(data.translation);
-
-      return toast.show({
-        render: () => {
-          return <SnackBar message='Tradução copiada com sucesso' />;
-        },
+      copyToClipboard(data.translation).then(() => {
+        return toast.show({
+          render: () => {
+            return <SnackBar message='Tradução copiada com sucesso' />;
+          },
+        });
       });
     }
 
-    await copyToClipboard(data.phrase);
-
-    return toast.show({
-      render: () => {
-        return <SnackBar message='Texto copiado com sucesso' />;
-      },
+    copyToClipboard(data.phrase).then(() => {
+      return toast.show({
+        render: () => {
+          return <SnackBar message='Texto copiado com sucesso' />;
+        },
+      });
     });
   };
 
@@ -56,8 +61,10 @@ const Content = ({ data, itemsStore }: ContentProps) => {
           <HStack alignItems='center'>
             <Typography variant='normalBold'>{data.author}</Typography>
 
-            <HStack position='absolute' width='full' left={260} space={1}>
-              <Button onPress={copyText} isCopyVariant />
+            <HStack position='absolute' width='full' left={220} space={3}>
+              <Button onPress={speechText} variant='speech' />
+
+              <Button onPress={copyText} variant='copy' />
 
               <Button
                 onPress={translateText}
