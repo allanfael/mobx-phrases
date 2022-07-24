@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import { ListRenderItem } from 'react-native';
 import { observer, inject } from 'mobx-react';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-import { Content } from '@components';
+import { Content, Button } from '@components';
 import { ItemsStore } from '@store';
 import { PhrasesDTO } from '@dto/PhrasesDTO';
 import ContentSkeleton from '@shimmers/ContentSkeleton';
@@ -11,9 +12,21 @@ import { Container, Divisor, SkeletonContainer } from './styles';
 
 type Props = {
   itemsStore?: ItemsStore;
+  navigation: StackNavigationProp<any, any>;
 };
 
-const ListItems = ({ itemsStore }: Props) => {
+const ListItems = ({ itemsStore, navigation }: Props) => {
+  // useLayoutEffect(() => {
+  //   navigation.setOptions({
+  //     headerRight: () => (
+  //       <Button
+  //         variant='favorite'
+  //         onPress={() => navigation.navigate('FavoritesScreen')}
+  //       />
+  //     ),
+  //   });
+  // }, [navigation]);
+
   useEffect(() => {
     itemsStore.fetch();
   }, []);

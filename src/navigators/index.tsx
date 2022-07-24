@@ -11,15 +11,17 @@ import {
 declare global {
   namespace ReactNavigation {
     interface RootParamList {
-      ListScreen: string;
+      FavoritesScreen: string;
     }
   }
 }
 
 import colors from 'themes/colors';
+import { Button } from '@components';
 
 // Screens
 import List from '../screens/ListItems';
+import Favorites from '../screens/Favorites';
 
 const Navigators = () => {
   const CustomDefaultTheme = {
@@ -37,6 +39,8 @@ const Navigators = () => {
       <Stack.Navigator
         screenOptions={{
           headerStyleInterpolator: HeaderStyleInterpolators.forUIKit,
+          headerTintColor: '#000',
+          headerBackTitleVisible: false,
         }}
       >
         <Stack.Screen
@@ -44,6 +48,16 @@ const Navigators = () => {
           component={List}
           options={{
             headerTitle: 'Frases',
+            headerRightContainerStyle: {
+              padding: 6,
+            },
+          }}
+        />
+        <Stack.Screen
+          name='FavoritesScreen'
+          component={Favorites}
+          options={{
+            headerTitle: 'Favoritos',
           }}
         />
       </Stack.Navigator>
