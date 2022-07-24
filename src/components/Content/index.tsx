@@ -31,7 +31,7 @@ const Content = ({ data, itemsStore }: ContentProps) => {
 
   const copyText = () => {
     if (!!data.translation) {
-      copyToClipboard(data.translation).then(() => {
+      return copyToClipboard(data.translation).then(() => {
         return toast.show({
           render: () => {
             return <SnackBar message='Tradução copiada com sucesso' />;
@@ -40,7 +40,7 @@ const Content = ({ data, itemsStore }: ContentProps) => {
       });
     }
 
-    copyToClipboard(data.phrase).then(() => {
+    return copyToClipboard(data.phrase).then(() => {
       return toast.show({
         render: () => {
           return <SnackBar message='Texto copiado com sucesso' />;
@@ -60,18 +60,6 @@ const Content = ({ data, itemsStore }: ContentProps) => {
         <VStack space={1} mr={20} ml={4}>
           <HStack alignItems='center'>
             <Typography variant='normalBold'>{data.author}</Typography>
-
-            <HStack position='absolute' width='full' left={220} space={3}>
-              <Button onPress={speechText} variant='speech' />
-
-              <Button onPress={copyText} variant='copy' />
-
-              <Button
-                onPress={translateText}
-                loading={data.loading}
-                isTranslated={!!data.translation}
-              />
-            </HStack>
           </HStack>
 
           <Typography variant='normalRegular'>{data.phrase}</Typography>
@@ -85,6 +73,16 @@ const Content = ({ data, itemsStore }: ContentProps) => {
             <Typography variant='normalRegular' color='gray'>
               {data.tags}
             </Typography>
+          </HStack>
+
+          <HStack mt={2} space={5}>
+            <Button onPress={speechText} variant='speech' />
+            <Button onPress={copyText} variant='copy' />
+            <Button
+              onPress={translateText}
+              loading={data.loading}
+              isTranslated={!!data.translation}
+            />
           </HStack>
         </VStack>
       </HStack>
