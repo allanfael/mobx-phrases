@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { ListRenderItem } from 'react-native';
 import { observer, inject } from 'mobx-react';
 
