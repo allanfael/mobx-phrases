@@ -1,6 +1,9 @@
 import React from 'react';
 import { Dimensions } from 'react-native';
-import { PanGestureHandler } from 'react-native-gesture-handler';
+import {
+  PanGestureHandler,
+  PanGestureHandlerProps,
+} from 'react-native-gesture-handler';
 import Animated, {
   Extrapolate,
   interpolate,
@@ -17,20 +20,18 @@ const TRANSLATE_X = -SCREEN_WIDTH * 0.3;
 type SwipeProps = {
   children: React.ReactNode;
   onSwipe: () => void;
-};
+} & Pick<PanGestureHandlerProps, 'simultaneousHandlers'>;
 
 const Swipe = ({ children, onSwipe }: SwipeProps) => {
   const translateX = useSharedValue(0);
-  const translateY = useSharedValue(0);
   const opacity = useSharedValue(1);
 
   const panGesture = useAnimatedGestureHandler({
     onActive: (event) => {
       translateX.value = event.translationX;
     },
-    onEnd: (event) => {
+    onEnd: () => {
       const shouldBeDismissed = translateX.value < TRANSLATE_X;
-      translateY.value = event.translationY;
 
       if (shouldBeDismissed) {
         translateX.value = withTiming(-SCREEN_WIDTH);
@@ -56,7 +57,11 @@ const Swipe = ({ children, onSwipe }: SwipeProps) => {
   }));
 
   return (
-    <PanGestureHandler onGestureEvent={panGesture}>
+    <PanGestureHandler
+      onGestureEvent={panGesture}
+      failOffsetY={[-5, 5]}
+      activeOffsetX={[-5, 5]}
+    >
       <Animated.View style={rStyle}>{children}</Animated.View>
     </PanGestureHandler>
   );

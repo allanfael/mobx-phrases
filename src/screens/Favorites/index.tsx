@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { ListRenderItem } from 'react-native';
 import { observer, inject } from 'mobx-react';
 
