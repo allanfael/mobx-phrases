@@ -1,14 +1,19 @@
 import React, { useEffect, useLayoutEffect } from 'react';
-import { ListRenderItem } from 'react-native';
+import { ListRenderItem, RefreshControl } from 'react-native';
 import { observer, inject } from 'mobx-react';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-import { Content, Button } from '@components';
+import { Content, Button, Empty } from '@components';
 import { ItemsStore } from '@store';
 import { PhrasesDTO } from '@dto/PhrasesDTO';
 import ContentSkeleton from '@shimmers/ContentSkeleton';
 
-import { Container, Divisor, SkeletonContainer } from './styles';
+import {
+  Container,
+  Divisor,
+  SkeletonContainer,
+  ActivityIndicator,
+} from './styles';
 
 type Props = {
   itemsStore?: ItemsStore;
@@ -16,16 +21,16 @@ type Props = {
 };
 
 const ListItems = ({ itemsStore, navigation }: Props) => {
-  // useLayoutEffect(() => {
-  //   navigation.setOptions({
-  //     headerRight: () => (
-  //       <Button
-  //         variant='favorite'
-  //         onPress={() => navigation.navigate('FavoritesScreen')}
-  //       />
-  //     ),
-  //   });
-  // }, [navigation]);
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button
+          variant='favorite'
+          onPress={() => navigation.navigate('FavoritesScreen')}
+        />
+      ),
+    });
+  }, [navigation]);
 
   useEffect(() => {
     itemsStore.fetch();
@@ -42,24 +47,18 @@ const ListItems = ({ itemsStore, navigation }: Props) => {
   };
 
   const LoadingFetchMore = (): JSX.Element => (
-    <>
-      {[1, 2, 3].map((_, index) => (
-        <SkeletonContainer key={index}>
-          <Divisor />
-          <ContentSkeleton />
-        </SkeletonContainer>
-      ))}
-    </>
+    <>{itemsStore.fetchMore && <ActivityIndicator size='small' />}</>
   );
 
-  const Loading = (): JSX.Element => (
+  const EmptyComponent = (): JSX.Element => (
     <>
-      {[1, 2, 3, 4, 5, 6].map((_, index) => (
-        <SkeletonContainer key={index}>
-          <ContentSkeleton />
-          <Divisor />
-        </SkeletonContainer>
-      ))}
+      {itemsStore.items.length < 1 &&
+        [1, 2, 3, 4, 5, 6].map((_, index) => (
+          <SkeletonContainer key={index}>
+            <ContentSkeleton />
+            <Divisor />
+          </SkeletonContainer>
+        ))}
     </>
   );
 
@@ -67,14 +66,22 @@ const ListItems = ({ itemsStore, navigation }: Props) => {
     <Container
       data={itemsStore.items}
       renderItem={renderItem}
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        <RefreshControl
+          refreshing={itemsStore.loadingTryAgain.is()}
+          onRefresh={() => {
+            itemsStore.tryAgain();
+          }}
+        />
+      }
       ItemSeparatorComponent={() => <Divisor />}
       onEndReached={fetchMore}
+      scrollEventThrottle={16}
       onEndReachedThreshold={0.1}
-      ListFooterComponent={() =>
-        itemsStore.loading.is() &&
-        itemsStore.items.length > 0 && <LoadingFetchMore />
-      }
-      ListEmptyComponent={() => itemsStore.items.length < 1 && <Loading />}
+      ListFooterComponent={() => <LoadingFetchMore />}
+      ListEmptyComponent={() => <EmptyComponent />}
+      contentInsetAdjustmentBehavior='always'
     />
   );
 };

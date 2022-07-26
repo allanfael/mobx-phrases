@@ -3,10 +3,11 @@ import {
   NavigationContainer,
   DefaultTheme as NavigationDefaultTheme,
 } from '@react-navigation/native';
-import {
-  createStackNavigator,
-  HeaderStyleInterpolators,
-} from '@react-navigation/stack';
+// import {
+//   createStackNavigator,
+//   HeaderStyleInterpolators,
+// } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 declare global {
   namespace ReactNavigation {
@@ -17,7 +18,6 @@ declare global {
 }
 
 import colors from 'themes/colors';
-import { Button } from '@components';
 
 // Screens
 import List from '../screens/ListItems';
@@ -32,15 +32,19 @@ const Navigators = () => {
     },
   };
 
-  const Stack = createStackNavigator();
+  const Stack = createNativeStackNavigator();
 
   return (
     <NavigationContainer theme={CustomDefaultTheme}>
       <Stack.Navigator
         screenOptions={{
-          headerStyleInterpolator: HeaderStyleInterpolators.forUIKit,
           headerTintColor: '#000',
           headerBackTitleVisible: false,
+          headerTitleStyle: {
+            fontFamily: 'Muli_700Bold',
+          },
+          headerTransparent: true,
+          headerBlurEffect: 'light',
         }}
       >
         <Stack.Screen
@@ -48,9 +52,12 @@ const Navigators = () => {
           component={List}
           options={{
             headerTitle: 'Frases',
-            headerRightContainerStyle: {
-              padding: 6,
+            headerLargeTitle: true,
+            headerLargeTitleStyle: {
+              fontFamily: 'Muli_700Bold',
             },
+            headerTransparent: true,
+            headerBlurEffect: 'light',
           }}
         />
         <Stack.Screen

@@ -1,5 +1,9 @@
 import styled from 'styled-components/native';
 
+type Props = {
+  isTranslated: boolean;
+};
+
 export const Pressable = styled.Pressable.attrs({
   hitSlop: {
     top: 10,
@@ -9,9 +13,7 @@ export const Pressable = styled.Pressable.attrs({
   },
 })``;
 
-export const Container = styled.View`
+export const Container = styled.View<Props>`
   justify-content: center;
-  align-items: center;
-  height: 24px;
-  width: 24px;
+  opacity: ${(props) => (props.isTranslated ? 0.3 : 1)};
 `;

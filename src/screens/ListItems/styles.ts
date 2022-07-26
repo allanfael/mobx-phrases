@@ -17,3 +17,9 @@ export const Divisor = styled.View`
 `;
 
 export const SkeletonContainer = styled.View``;
+
+export const ActivityIndicator = styled.ActivityIndicator`
+  align-self: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+`;

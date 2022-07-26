@@ -1,4 +1,4 @@
-import { action, makeObservable, observable, runInAction } from 'mobx';
+import { makeAutoObservable, runInAction } from 'mobx';
 import { LoadingState } from 'mobx-loading-state';
 
 import { PhrasesDTO } from '@dto/PhrasesDTO';
@@ -8,17 +8,13 @@ import { translatedTextService } from '@services/translation';
 
 export class ItemsStore {
   loading = new LoadingState();
+  loadingFetchMore = new LoadingState();
+  loadingTryAgain = new LoadingState();
   items: PhrasesDTO[] = [];
   page = 2;
 
   constructor() {
-    makeObservable(this, {
-      fetch: action,
-      fetchMore: action,
-      loading: observable,
-      items: observable,
-      page: observable,
-    });
+    makeAutoObservable(this);
   }
 
   async fetch() {
@@ -27,21 +23,29 @@ export class ItemsStore {
 
     runInAction(() => {
       this.items = data as PhrasesDTO[];
+      this.loading.off();
     });
+  }
 
-    this.loading.off();
+  async tryAgain() {
+    this.loadingTryAgain.on();
+    const data = await api(1);
+
+    runInAction(() => {
+      this.items = data as PhrasesDTO[];
+      this.loadingTryAgain.off();
+    });
   }
 
   async fetchMore() {
-    this.loading.on();
+    this.loadingFetchMore.on();
     const data = await api(this.page);
 
     runInAction(() => {
       this.items.push(...(data as PhrasesDTO[]));
       this.page++;
+      this.loadingFetchMore.off();
     });
-
-    this.loading.off();
   }
 
   async translate(text: string, id: string) {
