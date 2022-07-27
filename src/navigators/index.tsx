@@ -3,10 +3,6 @@ import {
   NavigationContainer,
   DefaultTheme as NavigationDefaultTheme,
 } from '@react-navigation/native';
-// import {
-//   createStackNavigator,
-//   HeaderStyleInterpolators,
-// } from '@react-navigation/stack';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 declare global {
@@ -22,6 +18,7 @@ import colors from 'themes/colors';
 // Screens
 import List from '../screens/ListItems';
 import Favorites from '../screens/Favorites';
+import { Platform } from 'react-native';
 
 const Navigators = () => {
   const CustomDefaultTheme = {
@@ -43,8 +40,9 @@ const Navigators = () => {
           headerTitleStyle: {
             fontFamily: 'Muli_700Bold',
           },
-          headerTransparent: true,
+          headerTransparent: Platform.OS === 'ios',
           headerBlurEffect: 'light',
+          headerShadowVisible: false,
         }}
       >
         <Stack.Screen
@@ -56,8 +54,6 @@ const Navigators = () => {
             headerLargeTitleStyle: {
               fontFamily: 'Muli_700Bold',
             },
-            headerTransparent: true,
-            headerBlurEffect: 'light',
           }}
         />
         <Stack.Screen

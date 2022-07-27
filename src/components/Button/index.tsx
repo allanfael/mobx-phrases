@@ -1,7 +1,10 @@
 import React from 'react';
 import { ActivityIndicator } from 'react-native';
 import { MotiView, useDynamicAnimation } from 'moti';
-import { TapGestureHandler } from 'react-native-gesture-handler';
+import {
+  GestureHandlerRootView,
+  TapGestureHandler,
+} from 'react-native-gesture-handler';
 import { useAnimatedGestureHandler } from 'react-native-reanimated';
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -38,39 +41,43 @@ const Button = ({
     },
   });
 
+  const TapAnimation = ({ children }: { children: React.ReactNode }) => (
+    <GestureHandlerRootView>
+      <TapGestureHandler onHandlerStateChange={onGestureEvent}>
+        <MotiView style={{ justifyContent: 'center' }} state={animation}>
+          {children}
+        </MotiView>
+      </TapGestureHandler>
+    </GestureHandlerRootView>
+  );
+
   switch (variant) {
     case 'copy':
       return (
-        <TapGestureHandler onGestureEvent={onGestureEvent}>
-          <MotiView style={{ justifyContent: 'center' }} state={animation}>
-            <Pressable onPress={onPress}>
-              <MaterialIcons name='content-copy' size={iconSize || 20} />
-            </Pressable>
-          </MotiView>
-        </TapGestureHandler>
+        <TapAnimation>
+          <Pressable onPress={onPress}>
+            <MaterialIcons name='content-copy' size={iconSize || 20} />
+          </Pressable>
+        </TapAnimation>
       );
     case 'speech':
       return (
-        <TapGestureHandler onGestureEvent={onGestureEvent}>
-          <MotiView style={{ justifyContent: 'center' }} state={animation}>
-            <Pressable onPress={onPress}>
-              <MaterialIconsCommunity
-                name='text-to-speech'
-                size={iconSize || 22}
-              />
-            </Pressable>
-          </MotiView>
-        </TapGestureHandler>
+        <TapAnimation>
+          <Pressable onPress={onPress}>
+            <MaterialIconsCommunity
+              name='text-to-speech'
+              size={iconSize || 22}
+            />
+          </Pressable>
+        </TapAnimation>
       );
     case 'favorite':
       return (
-        <TapGestureHandler onGestureEvent={onGestureEvent}>
-          <MotiView style={{ justifyContent: 'center' }} state={animation}>
-            <Pressable onPress={onPress}>
-              <FontAwesome name='heart-o' size={iconSize || 20} />
-            </Pressable>
-          </MotiView>
-        </TapGestureHandler>
+        <TapAnimation>
+          <Pressable onPress={onPress}>
+            <FontAwesome name='heart-o' size={iconSize || 20} />
+          </Pressable>
+        </TapAnimation>
       );
     default:
       return (

@@ -1,6 +1,7 @@
 import React from 'react';
-import { Dimensions } from 'react-native';
+import { Dimensions, View } from 'react-native';
 import {
+  GestureHandlerRootView,
   PanGestureHandler,
   PanGestureHandlerProps,
 } from 'react-native-gesture-handler';
@@ -57,13 +58,15 @@ const Swipe = ({ children, onSwipe }: SwipeProps) => {
   }));
 
   return (
-    <PanGestureHandler
-      onGestureEvent={panGesture}
-      failOffsetY={[-5, 5]}
-      activeOffsetX={[-5, 5]}
-    >
-      <Animated.View style={rStyle}>{children}</Animated.View>
-    </PanGestureHandler>
+    <GestureHandlerRootView>
+      <PanGestureHandler
+        failOffsetY={[-5, 5]}
+        activeOffsetX={[0, 0]}
+        onGestureEvent={panGesture}
+      >
+        <Animated.View style={rStyle}>{children}</Animated.View>
+      </PanGestureHandler>
+    </GestureHandlerRootView>
   );
 };
 
