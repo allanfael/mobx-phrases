@@ -1,5 +1,5 @@
-import React, { useCallback, useRef } from 'react';
-import { ListRenderItem } from 'react-native';
+import React, { useCallback } from 'react';
+import { LayoutAnimation, ListRenderItem } from 'react-native';
 import { observer, inject } from 'mobx-react';
 
 import { Content, Empty, Swipe } from '@components';
@@ -14,6 +14,7 @@ type Props = {
 
 const Favorites = ({ favoritesStore }: Props) => {
   const removeFavorite = useCallback((id: string) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     favoritesStore.remove(id);
   }, []);
 
