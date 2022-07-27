@@ -3,15 +3,12 @@ import {
   NavigationContainer,
   DefaultTheme as NavigationDefaultTheme,
 } from '@react-navigation/native';
-import {
-  createStackNavigator,
-  HeaderStyleInterpolators,
-} from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 declare global {
   namespace ReactNavigation {
     interface RootParamList {
-      ListScreen: string;
+      FavoritesScreen: string;
     }
   }
 }
@@ -20,6 +17,8 @@ import colors from 'themes/colors';
 
 // Screens
 import List from '../screens/ListItems';
+import Favorites from '../screens/Favorites';
+import { Platform } from 'react-native';
 
 const Navigators = () => {
   const CustomDefaultTheme = {
@@ -30,13 +29,20 @@ const Navigators = () => {
     },
   };
 
-  const Stack = createStackNavigator();
+  const Stack = createNativeStackNavigator();
 
   return (
     <NavigationContainer theme={CustomDefaultTheme}>
       <Stack.Navigator
         screenOptions={{
-          headerStyleInterpolator: HeaderStyleInterpolators.forUIKit,
+          headerTintColor: '#000',
+          headerBackTitleVisible: false,
+          headerTitleStyle: {
+            fontFamily: 'Muli_700Bold',
+          },
+          headerTransparent: Platform.OS === 'ios',
+          headerBlurEffect: 'light',
+          headerShadowVisible: false,
         }}
       >
         <Stack.Screen
@@ -44,6 +50,17 @@ const Navigators = () => {
           component={List}
           options={{
             headerTitle: 'Frases',
+            headerLargeTitle: true,
+            headerLargeTitleStyle: {
+              fontFamily: 'Muli_700Bold',
+            },
+          }}
+        />
+        <Stack.Screen
+          name='FavoritesScreen'
+          component={Favorites}
+          options={{
+            headerTitle: 'Favoritos',
           }}
         />
       </Stack.Navigator>

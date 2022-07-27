@@ -1,15 +1,15 @@
 import React from 'react';
 import { Avatar } from 'native-base';
 
-import colors from '@themes/colors';
+import avatar from '@assets/images/avatar.png';
 
 const UserAvatar = () => {
   return (
     <Avatar
-      bg={colors.silver}
-      size='md'
-      source={{
-        uri: 'https://i.pravatar.cc/300',
+      bg='gray.100'
+      source={avatar}
+      _image={{
+        resizeMode: 'contain',
       }}
     />
   );
