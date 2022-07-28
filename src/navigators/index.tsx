@@ -1,4 +1,5 @@
 import React from 'react';
+import { Platform } from 'react-native';
 import {
   NavigationContainer,
   DefaultTheme as NavigationDefaultTheme,
@@ -16,9 +17,8 @@ declare global {
 import colors from 'themes/colors';
 
 // Screens
-import List from '../screens/ListItems';
-import Favorites from '../screens/Favorites';
-import { Platform } from 'react-native';
+import List from '@screens/ListItems';
+import Favorites from '@screens/Favorites';
 
 const Navigators = () => {
   const CustomDefaultTheme = {

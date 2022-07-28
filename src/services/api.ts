@@ -14,6 +14,7 @@ export const api = async (page: number) => {
         tags: item?.tags.join(', '),
         author: item.author,
         phrase: item.content,
+        isFavorite: false,
       };
     }) as PhrasesDTO;
 

@@ -17,7 +17,8 @@ type ButtonProps = {
   onPress: () => void;
   loading?: boolean;
   isTranslated?: boolean;
-  variant?: 'copy' | 'speech' | 'favorite';
+  isFavorite?: boolean;
+  variant?: 'copy' | 'speech' | 'favorite' | 'favoriteNavigation';
   iconSize?: number;
 };
 
@@ -27,6 +28,7 @@ const Button = ({
   isTranslated,
   variant,
   iconSize,
+  isFavorite,
 }: ButtonProps) => {
   const animation = useDynamicAnimation(() => ({
     scale: 1,
@@ -75,9 +77,19 @@ const Button = ({
       return (
         <TapAnimation>
           <Pressable onPress={onPress}>
-            <FontAwesome name='heart-o' size={iconSize || 20} />
+            <FontAwesome
+              name={isFavorite ? 'heart' : 'heart-o'}
+              size={iconSize || 20}
+              color={isFavorite && '#f00'}
+            />
           </Pressable>
         </TapAnimation>
+      );
+    case 'favoriteNavigation':
+      return (
+        <Pressable onPress={onPress}>
+          <FontAwesome name='heart-o' size={iconSize || 20} />
+        </Pressable>
       );
     default:
       return (

@@ -45,49 +45,24 @@ const Content = ({
 
   const copyText = () => {
     if (!!data.translation) {
-      return copyToClipboard(data.translation).then(() => {
-        return toast.show({
-          render: () => {
-            return <SnackBar message='Tradução copiada com sucesso' />;
-          },
-        });
+      copyToClipboard(data.translation);
+      return toast.show({
+        render: () => {
+          return <SnackBar message='Tradução copiada com sucesso' />;
+        },
       });
     }
 
-    return copyToClipboard(data.phrase).then(() => {
-      return toast.show({
-        render: () => {
-          return <SnackBar message='Texto copiado com sucesso' />;
-        },
-      });
+    copyToClipboard(data.phrase);
+    return toast.show({
+      render: () => {
+        return <SnackBar message='Texto copiado com sucesso' />;
+      },
     });
   };
 
-  const addToFavorites = async () => {
-    favoritesStore.add(data).then((isAdd) => {
-      if (isAdd) {
-        return toast.show({
-          render: () => {
-            return <SnackBar message='Adicionado aos favoritos' />;
-          },
-          duration: 1500,
-        });
-      }
-
-      toast.show({
-        render: () => {
-          return <SnackBar message='Ops! Post já favoritado' />;
-        },
-        duration: 1500,
-      });
-    });
-
-    toast.show({
-      render: () => {
-        return <SnackBar message='Adicionado aos favoritos' />;
-      },
-      duration: 1500,
-    });
+  const handleFavorites = () => {
+    favoritesStore.handleFavorite(data);
   };
 
   return (
@@ -130,9 +105,10 @@ const Content = ({
             )}
             {hasFavorite && (
               <Button
-                onPress={addToFavorites}
+                onPress={handleFavorites}
                 variant='favorite'
                 iconSize={18}
+                isFavorite={data.isFavorite}
               />
             )}
           </HStack>

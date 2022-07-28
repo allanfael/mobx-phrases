@@ -25,7 +25,7 @@ const ListItems = ({ itemsStore, navigation }: Props) => {
     navigation.setOptions({
       headerRight: () => (
         <Button
-          variant='favorite'
+          variant='favoriteNavigation'
           onPress={() => navigation.navigate('FavoritesScreen')}
         />
       ),
@@ -77,8 +77,7 @@ const ListItems = ({ itemsStore, navigation }: Props) => {
       }
       ItemSeparatorComponent={() => <Divisor />}
       onEndReached={fetchMore}
-      scrollEventThrottle={16}
-      onEndReachedThreshold={0.1}
+      onEndReachedThreshold={0.2}
       ListFooterComponent={() => <LoadingFetchMore />}
       ListEmptyComponent={() => <EmptyComponent />}
       contentInsetAdjustmentBehavior='always'
