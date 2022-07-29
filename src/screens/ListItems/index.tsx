@@ -3,7 +3,7 @@ import { ListRenderItem, RefreshControl } from 'react-native';
 import { observer, inject } from 'mobx-react';
 import { StackNavigationProp } from '@react-navigation/stack';
 
-import { Content, Button, Empty } from '@components';
+import { Content, Button } from '@components';
 import { ItemsStore } from '@store';
 import { PhrasesDTO } from '@dto/PhrasesDTO';
 import ContentSkeleton from '@shimmers/ContentSkeleton';

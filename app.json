@@ -4,10 +4,10 @@
     "slug": "frases",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/iconFrases.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splashIcon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -21,8 +21,9 @@
       "supportsTablet": true
     },
     "android": {
+      "icon": "./assets/splashIcon.png",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/splashIcon.png",
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.allanfael.frases"

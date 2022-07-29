@@ -1,8 +1,9 @@
 import 'react-native-gesture-handler';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { NativeBaseProvider } from 'native-base';
 import { ThemeProvider } from 'styled-components/native';
+import * as SplashScreen from 'expo-splash-screen';
 import {
   useFonts,
   Muli_400Regular,
@@ -14,6 +15,8 @@ import { Provider } from 'mobx-react';
 import RootNavigator from '@navigator';
 import colors from '@themes/colors';
 import rootStore, { trunk } from '@store/rootStore';
+
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -33,8 +36,16 @@ export default function App() {
     rehydrate();
   }, []);
 
+  const onLayoutRootView = useCallback(async () => {
+    setTimeout(async () => {
+      await SplashScreen.hideAsync();
+    }, 1000);
+  }, []);
+
   if (!fontsLoaded || !isStoreLoaded) {
     return null;
+  } else {
+    onLayoutRootView();
   }
 
   return (
