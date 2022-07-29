@@ -5,5 +5,15 @@ import Button from './Button';
 import SnackBar from './SnackBar';
 import Empty from './Empty';
 import Swipe from './Swipe';
+import LoadingImage from './LoadingImage';
 
-export { Typography, Avatar, Content, Button, SnackBar, Empty, Swipe };
+export {
+  Typography,
+  Avatar,
+  Content,
+  Button,
+  SnackBar,
+  Empty,
+  Swipe,
+  LoadingImage,
+};
