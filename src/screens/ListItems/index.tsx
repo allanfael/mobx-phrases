@@ -1,9 +1,8 @@
-import React, { useEffect, useLayoutEffect } from 'react';
-import { ListRenderItem, RefreshControl } from 'react-native';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { ListRenderItem, Platform, RefreshControl } from 'react-native';
 import { observer, inject } from 'mobx-react';
-import { StackNavigationProp } from '@react-navigation/stack';
 
-import { Content, Button } from '@components';
+import { Content, Button, Empty } from '@components';
 import { ItemsStore } from '@store';
 import { PhrasesDTO } from '@dto/PhrasesDTO';
 import ContentSkeleton from '@shimmers/ContentSkeleton';
@@ -17,10 +16,29 @@ import {
 
 type Props = {
   itemsStore?: ItemsStore;
-  navigation: StackNavigationProp<any, any>;
+  navigation: any;
 };
 
 const ListItems = ({ itemsStore, navigation }: Props) => {
+  const [author, setAuthor] = useState('');
+
+  const SearchOptionsIOS = Platform.OS === 'ios' && {
+    headerSearchBarOptions: {
+      placeholder: 'Buscar autor',
+      cancelButtonText: 'Cancelar',
+      autoCapitalize: 'words',
+      onChangeText(event) {
+        setAuthor(event.nativeEvent.text);
+      },
+      onCancelButtonPress() {
+        setAuthor('');
+      },
+      onSearchButtonPress() {
+        searchByAuthor();
+      },
+    },
+  };
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -29,11 +47,12 @@ const ListItems = ({ itemsStore, navigation }: Props) => {
           onPress={() => navigation.navigate('FavoritesScreen')}
         />
       ),
+      ...SearchOptionsIOS,
     });
-  }, [navigation]);
+  }, [navigation, author]);
 
   useEffect(() => {
-    itemsStore.fetch();
+    itemsStore.initialFetch();
   }, []);
 
   const fetchMore = () => {
@@ -42,23 +61,30 @@ const ListItems = ({ itemsStore, navigation }: Props) => {
     }
   };
 
+  const searchByAuthor = () => {
+    itemsStore.searchByAuthor(author);
+  };
+
   const renderItem: ListRenderItem<PhrasesDTO> = ({ item }) => {
     return <Content data={item} />;
   };
 
   const LoadingFetchMore = (): JSX.Element => (
-    <>{itemsStore.fetchMore && <ActivityIndicator size='small' />}</>
+    <>{!itemsStore.errorMessage && <ActivityIndicator size='small' />}</>
   );
 
   const EmptyComponent = (): JSX.Element => (
     <>
-      {itemsStore.items.length < 1 &&
+      {itemsStore.errorMessage ? (
+        <Empty message={itemsStore.errorMessage} />
+      ) : (
         [1, 2, 3, 4, 5, 6].map((_, index) => (
           <SkeletonContainer key={index}>
             <ContentSkeleton />
             <Divisor />
           </SkeletonContainer>
-        ))}
+        ))
+      )}
     </>
   );
 

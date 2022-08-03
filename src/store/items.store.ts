@@ -13,64 +13,58 @@ export class ItemsStore {
   loadingTryAgain = new LoadingState();
   items: PhrasesDTO[] = [];
   page = 2;
+  errorMessage = '';
 
   constructor() {
     makeAutoObservable(this);
   }
 
-  async fetch() {
-    this.loading.on();
-    const data = await api(1);
+  private handleFavorite(arr: PhrasesDTO[]) {
     const favoriteStore = rootStore.favoritesStore;
 
-    runInAction(() => {
-      // CHECK IF ITEM IS FAVORITE
-      for (let i = 0; i < data.length; i++) {
-        if (
-          favoriteStore.favorites.find((favorite) => favorite.id === data[i].id)
-        ) {
-          data[i].isFavorite = true;
-        }
+    for (let i = 0; i < arr.length; i++) {
+      if (
+        favoriteStore.favorites.find((favorite) => favorite.id === arr[i].id)
+      ) {
+        arr[i].isFavorite = true;
       }
+    }
+  }
 
+  isArrayEmpty(arr: PhrasesDTO[], message: string) {
+    if (arr.length < 1) this.errorMessage = message;
+  }
+
+  private async fetch() {
+    this.errorMessage = '';
+    const data = await api.fetch(1);
+
+    runInAction(() => {
       this.items = data as PhrasesDTO[];
-
-      this.loading.off();
+      this.isArrayEmpty(this.items, 'Não foi possível carregar o conteúdo');
+      this.handleFavorite(this.items);
     });
   }
 
-  async tryAgain() {
-    this.loadingTryAgain.on();
-    const data = await api(1);
-    const favoriteStore = rootStore.favoritesStore;
+  initialFetch() {
+    this.loading.on();
+    this.fetch();
+    this.loading.off();
+  }
 
-    runInAction(() => {
-      for (let i = 0; i < data.length; i++) {
-        if (
-          favoriteStore.favorites.find((favorite) => favorite.id === data[i].id)
-        ) {
-          data[i].isFavorite = true;
-        }
-      }
-      this.items = data as PhrasesDTO[];
-      this.loadingTryAgain.off();
-    });
+  tryAgain() {
+    this.loadingTryAgain.on();
+    this.fetch();
+    this.loadingTryAgain.off();
   }
 
   async fetchMore() {
     this.loadingFetchMore.on();
-    const data = await api(this.page);
-    const favoriteStore = rootStore.favoritesStore;
+    const data = await api.fetch(this.page);
 
     runInAction(() => {
-      for (let i = 0; i < data.length; i++) {
-        if (
-          favoriteStore.favorites.find((favorite) => favorite.id === data[i].id)
-        ) {
-          data[i].isFavorite = true;
-        }
-      }
       this.items.push(...(data as PhrasesDTO[]));
+      this.handleFavorite(this.items);
       this.page++;
       this.loadingFetchMore.off();
     });
@@ -86,6 +80,19 @@ export class ItemsStore {
     runInAction(() => {
       this.items.find((item) => item.id === id).translation = data;
       this.items.find((item) => item.id === id).loading = false;
+    });
+  }
+
+  async searchByAuthor(author: string) {
+    this.loading.on();
+    this.errorMessage = '';
+    const data = await api.searchByAuthor(author);
+
+    runInAction(() => {
+      this.items = data as PhrasesDTO[];
+      this.isArrayEmpty(this.items, 'Não foi possível encontrar autor');
+      this.handleFavorite(this.items);
+      this.loading.off();
     });
   }
 }

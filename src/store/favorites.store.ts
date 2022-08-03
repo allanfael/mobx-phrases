@@ -26,7 +26,7 @@ export class FavoritesStore {
     });
   }
 
-  private remove(id: string) {
+  remove(id: string) {
     runInAction(() => {
       this.favorites = this.favorites.filter((favorite) => favorite.id !== id);
       rootStore.itemsStore.items.find((item) => item.id === id).isFavorite =

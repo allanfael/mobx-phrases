@@ -39,7 +39,7 @@ export default function App() {
   const onLayoutRootView = useCallback(async () => {
     setTimeout(async () => {
       await SplashScreen.hideAsync();
-    }, 1000);
+    }, 500);
   }, []);
 
   if (!fontsLoaded || !isStoreLoaded) {

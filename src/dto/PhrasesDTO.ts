@@ -5,4 +5,5 @@ export type PhrasesDTO = {
   phrase: string;
   translation: string;
   loading: boolean;
+  isFavorite: boolean;
 };
