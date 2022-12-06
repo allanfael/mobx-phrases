@@ -1,4 +1,5 @@
 import 'react-native-gesture-handler';
+import { LogBox } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { NativeBaseProvider } from 'native-base';
@@ -14,18 +15,24 @@ import { Provider } from 'mobx-react';
 
 import RootNavigator from '@navigator';
 import colors from '@themes/colors';
-import rootStore, { trunk } from '@store/rootStore';
+import { trunk, rootStore } from '@store/rootStore';
+
+LogBox.ignoreLogs(['Require cycles are allowed']);
 
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  let [fontsLoaded] = useFonts({
+  const [fontsLoaded] = useFonts({
     Muli_400Regular,
     Muli_600SemiBold,
     Muli_700Bold,
   });
 
   const [isStoreLoaded, setIsStoreLoaded] = useState(false);
+
+  const onLayoutRootView = useCallback(async () => {
+    await SplashScreen.hideAsync();
+  }, []);
 
   useEffect(() => {
     const rehydrate = async () => {
@@ -36,12 +43,6 @@ export default function App() {
     rehydrate();
   }, []);
 
-  const onLayoutRootView = useCallback(async () => {
-    setTimeout(async () => {
-      await SplashScreen.hideAsync();
-    }, 1000);
-  }, []);
-
   if (!fontsLoaded || !isStoreLoaded) {
     return null;
   } else {
@@ -49,13 +50,13 @@ export default function App() {
   }
 
   return (
-    <Provider {...rootStore}>
-      <ThemeProvider theme={colors}>
+    <ThemeProvider theme={colors}>
+      <Provider {...rootStore}>
         <NativeBaseProvider>
           <StatusBar style='auto' />
           <RootNavigator />
         </NativeBaseProvider>
-      </ThemeProvider>
-    </Provider>
+      </Provider>
+    </ThemeProvider>
   );
 }
