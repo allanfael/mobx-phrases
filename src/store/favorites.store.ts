@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 
 import { PhrasesDTO } from '@dto/PhrasesDTO';
-import rootStore from './rootStore';
+import { rootStore } from './rootStore';
 
 export class FavoritesStore {
   favorites: PhrasesDTO[] = [];

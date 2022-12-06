@@ -20,4 +20,4 @@ export const trunk = new AsyncTrunk(rootStore.favoritesStore, {
   storage: AsyncStorage,
 });
 
-export default rootStore;
+export { rootStore };

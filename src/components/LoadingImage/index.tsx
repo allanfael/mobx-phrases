@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Container, Image } from './styles';
 
-import image from '@assets/images/splashIcon.png';
+import image from '@assets/images/message.png';
 
 const LoadingImage: React.FC = () => {
   return (

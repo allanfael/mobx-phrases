@@ -73,18 +73,21 @@ const Content = ({
     >
       <HStack key={data.id} width='full'>
         <Avatar />
-        <VStack space={1} mr={20} ml={4}>
+        <VStack space={1} pr={20} pl={4}>
           <HStack alignItems='center'>
             <Typography variant='normalBold'>{data.author}</Typography>
           </HStack>
 
-          <Typography variant='normalRegular'>{data.phrase}</Typography>
+          <VStack space={1}>
+            <Typography variant='normalRegular'>{data.phrase}</Typography>
+          </VStack>
+
           {!!data.translation && (
             <HStack>
               <Typography variant='normalMedium'>{data.translation}</Typography>
             </HStack>
           )}
-          <HStack mt={2}>
+          <HStack mt={2} mr={4}>
             <Typography variant='normalBold'>Tags: </Typography>
             <Typography variant='normalRegular' color='gray'>
               {data.tags}

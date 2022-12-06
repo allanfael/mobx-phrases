@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-import { PhrasesDTO } from '@dto/PhrasesDTO';
+import { PhrasesDTO, PhraseApi } from '@dto/PhrasesDTO';
 
-export const api = async (page: number) => {
+export const api = async (page: number): Promise<PhraseApi[]> => {
   try {
     const { data } = await axios.get(
       `https://api.quotable.io/quotes?page=${page}`
@@ -16,7 +16,7 @@ export const api = async (page: number) => {
         phrase: item.content,
         isFavorite: false,
       };
-    }) as PhrasesDTO;
+    }) as PhrasesDTO[];
 
     return phrases;
   } catch (error) {
