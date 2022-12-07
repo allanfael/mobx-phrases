@@ -54,7 +54,7 @@ const Content = ({
     }
 
     copyToClipboard(data.phrase);
-    return toast.show({
+    toast.show({
       render: () => {
         return <SnackBar message='Texto copiado com sucesso' />;
       },
@@ -78,7 +78,7 @@ const Content = ({
             <Typography variant='normalBold'>{data.author}</Typography>
           </HStack>
 
-          <VStack space={1}>
+          <VStack>
             <Typography variant='normalRegular'>{data.phrase}</Typography>
           </VStack>
 

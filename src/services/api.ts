@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { PhrasesDTO, PhraseApi } from '@dto/PhrasesDTO';
+import { ResponseError } from './ResponseError';
 
 export const api = async (page: number): Promise<PhraseApi[]> => {
   try {
@@ -20,6 +21,6 @@ export const api = async (page: number): Promise<PhraseApi[]> => {
 
     return phrases;
   } catch (error) {
-    return [] as PhrasesDTO[];
+    throw ResponseError(error);
   }
 };

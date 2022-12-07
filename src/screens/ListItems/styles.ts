@@ -23,3 +23,9 @@ export const ActivityIndicator = styled.ActivityIndicator`
   margin-top: 10px;
   margin-bottom: 10px;
 `;
+
+export const EmptyList = styled.View`
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+`;

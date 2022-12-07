@@ -1,9 +1,10 @@
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { ListRenderItem, RefreshControl } from 'react-native';
 import { observer, inject } from 'mobx-react';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { useToast } from 'native-base';
 
-import { Content, Button } from '@components';
+import { Content, Button, SnackBar, Typography } from '@components';
 import { ItemsStore } from '@store';
 import { PhrasesDTO } from '@dto/PhrasesDTO';
 import ContentSkeleton from '@shimmers/ContentSkeleton';
@@ -13,6 +14,7 @@ import {
   Divisor,
   SkeletonContainer,
   ActivityIndicator,
+  EmptyList,
 } from './styles';
 
 type Props = {
@@ -21,6 +23,12 @@ type Props = {
 };
 
 const ListItems = ({ itemsStore, navigation }: Props) => {
+  const [loading, setLoading] = useState(false);
+  const [loadingFetchMore, setLoadingFetchMore] = useState(false);
+  const [loadingRefresh, setLoadingRefresh] = useState(false);
+
+  const toast = useToast();
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
@@ -33,12 +41,34 @@ const ListItems = ({ itemsStore, navigation }: Props) => {
   }, [navigation]);
 
   useEffect(() => {
-    itemsStore.fetch();
+    fetch();
   }, []);
 
-  const fetchMore = () => {
-    if (!itemsStore.loading.is()) {
-      itemsStore.fetchMore();
+  const fetch = async (isRefresh?: boolean): Promise<void> => {
+    try {
+      isRefresh ? setLoadingRefresh(true) : setLoading(true);
+      await itemsStore.fetch();
+    } catch (error) {
+      toast.show({
+        render: () => {
+          return <SnackBar message={error.message} type='error' />;
+        },
+      });
+    } finally {
+      isRefresh ? setLoadingRefresh(false) : setLoading(false);
+    }
+  };
+
+  const fetchMore = async (): Promise<void> => {
+    if (!loadingFetchMore) {
+      try {
+        setLoadingFetchMore(true);
+        await itemsStore.fetchMore();
+      } catch (error) {
+        setLoadingFetchMore(false);
+      } finally {
+        setLoadingFetchMore(false);
+      }
     }
   };
 
@@ -47,31 +77,38 @@ const ListItems = ({ itemsStore, navigation }: Props) => {
   };
 
   const LoadingFetchMore = (): JSX.Element => (
-    <>{itemsStore.fetchMore && <ActivityIndicator size='small' />}</>
+    <>{loadingFetchMore && <ActivityIndicator size='small' />}</>
   );
 
   const EmptyComponent = (): JSX.Element => (
     <>
-      {itemsStore.items.length < 1 &&
+      {loading ? (
         [1, 2, 3, 4, 5, 6].map((_, index) => (
           <SkeletonContainer key={index}>
             <ContentSkeleton />
             <Divisor />
           </SkeletonContainer>
-        ))}
+        ))
+      ) : (
+        <EmptyList>
+          <Typography variant='normalRegular'>Ops! Algo deu errado</Typography>
+          <Typography variant='normalRegular'>Tente novamente</Typography>
+        </EmptyList>
+      )}
     </>
   );
 
   return (
     <Container
       data={itemsStore.items}
+      keyExtractor={(item: PhrasesDTO) => item.id.toString()}
       renderItem={renderItem}
       showsVerticalScrollIndicator={false}
       refreshControl={
         <RefreshControl
-          refreshing={itemsStore.loadingTryAgain.is()}
+          refreshing={loadingRefresh}
           onRefresh={() => {
-            itemsStore.tryAgain();
+            fetch(true);
           }}
         />
       }
